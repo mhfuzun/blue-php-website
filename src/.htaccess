@@ -1,27 +1,85 @@
-# 1. Klasör listelemeyi kapat (En temel güvenlik adımı)
+# ----------------------------------------------------------------------
+# 1. TEMEL GÜVENLİK
+# ----------------------------------------------------------------------
+
+# Klasör listelemeyi kapat
 Options -Indexes
 
-# 2. Karakter setini UTF-8 olarak ayarla
+# UTF-8 karakter seti
 AddDefaultCharset UTF-8
 
-# 3. Rewrite motorunu çalıştır
+# Server signature kapat (Apache versiyon gizleme)
+ServerSignature Off
+
+# ----------------------------------------------------------------------
+# 2. REWRITE MOTORU
+# ----------------------------------------------------------------------
+
 RewriteEngine On
 
 # ----------------------------------------------------------------------
-# 4. HASSAS KLASÖRLERİ KORU
+# 3. HASSAS DOSYA VE KLASÖRLERİ KORU
 # ----------------------------------------------------------------------
-# Tarayıcıdan birisi "site.com/src/Database.php" yazarsa 403 (Yasak) hatası verir.
-RewriteRule ^(src|config|logs|tests)/ - [F,L]
 
-# .env veya .git gibi nokta ile başlayan gizli dosyaları koru
-RewriteRule ^\.(.*) - [F,L]
+# Kritik klasörleri engelle
+RewriteRule ^(src|config|logs|tests|vendor)/ - [F,L]
+
+# Gizli dosyaları engelle (.env, .git vs.)
+RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+# Composer dosyaları
+RewriteRule ^composer\.(json|lock)$ - [F,L]
+
+# PHP ini vb.
+RewriteRule ^(php\.ini|\.htaccess)$ - [F,L]
 
 # ----------------------------------------------------------------------
-# 5. YÖNLENDİRME (ROUTING)
+# 4. HTTP METHOD GÜVENLİĞİ
 # ----------------------------------------------------------------------
-# Eğer istenen dosya veya klasör gerçekten varsa (resim, css, js vb.), ona izin ver.
+
+# Sadece GET, POST, HEAD izin ver
+RewriteCond %{REQUEST_METHOD} !^(GET|POST|HEAD)$
+RewriteRule .* - [F]
+
+# ----------------------------------------------------------------------
+# 5. DOSYA VARSA DOKUNMA
+# ----------------------------------------------------------------------
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Geri kalan tüm istekleri index.php'ye gönder (Temiz URL'ler için)
+# ----------------------------------------------------------------------
+# 6. FRONT CONTROLLER (MVC)
+# ----------------------------------------------------------------------
+
 RewriteRule ^ index.php [L,QSA]
+
+# ----------------------------------------------------------------------
+# 7. GÜVENLİK HEADER'LARI
+# ----------------------------------------------------------------------
+
+<IfModule mod_headers.c>
+
+    # XSS koruması
+    Header set X-XSS-Protection "1; mode=block"
+
+    # MIME sniffing engelle
+    Header set X-Content-Type-Options "nosniff"
+
+    # Clickjacking koruması
+    Header set X-Frame-Options "SAMEORIGIN"
+
+    # Referrer policy
+    Header set Referrer-Policy "no-referrer-when-downgrade"
+
+    # Basit CSP (isteğe göre sıkılaştırılabilir)
+    Header set Content-Security-Policy "default-src 'self'; img-src 'self' data:; script-src 'self'; style-src 'self' 'unsafe-inline'"
+
+</IfModule>
+
+# ----------------------------------------------------------------------
+# 8. HATA SAYFALARI (opsiyonel ama önerilir)
+# ----------------------------------------------------------------------
+
+ErrorDocument 403 /404.php
+ErrorDocument 404 /404.php

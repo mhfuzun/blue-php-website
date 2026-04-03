@@ -1,6 +1,23 @@
 <?php
 // bootstrap.php
 
+$envFile = __DIR__ . '/../../.env';
+
+if (file_exists($envFile)) {
+    $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+
+        list($key, $value) = explode('=', $line, 2);
+        $_ENV[$key] = trim($value);
+        putenv("$key=$value");
+    }
+} else {
+    error_log("Environment file not found: " . $envFile);
+    die("Environment error!");
+}
+
 // Bu dosyanın bulunduğu klasörden bağımsız olarak projenin ana dizinini bulur
 define('BASE_PATH', dirname(__DIR__) . DIRECTORY_SEPARATOR);
 
