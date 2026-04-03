@@ -1,0 +1,25 @@
+<?php require_once __DIR__ . '/../../config/bootstrap.php'; ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><?= $title ?></title>
+    
+    <link rel="stylesheet" href="<?= URL . Config::get('bootstrap_assets.css') ?>">
+    <script src="<?= URL . Config::get('bootstrap_assets.js') ?>"></script>
+</head>
+<body>
+
+<?php require 'navbar.php'; ?>
+
+<main>
+    <?php require __DIR__ . "/../$view.php"; ?>
+</main>
+
+<?php require 'footer.php'; ?>
+
+</body>
+</html>

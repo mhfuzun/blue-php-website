@@ -1,0 +1,27 @@
+# 1. Klasör listelemeyi kapat (En temel güvenlik adımı)
+Options -Indexes
+
+# 2. Karakter setini UTF-8 olarak ayarla
+AddDefaultCharset UTF-8
+
+# 3. Rewrite motorunu çalıştır
+RewriteEngine On
+
+# ----------------------------------------------------------------------
+# 4. HASSAS KLASÖRLERİ KORU
+# ----------------------------------------------------------------------
+# Tarayıcıdan birisi "site.com/src/Database.php" yazarsa 403 (Yasak) hatası verir.
+RewriteRule ^(src|config|logs|tests)/ - [F,L]
+
+# .env veya .git gibi nokta ile başlayan gizli dosyaları koru
+RewriteRule ^\.(.*) - [F,L]
+
+# ----------------------------------------------------------------------
+# 5. YÖNLENDİRME (ROUTING)
+# ----------------------------------------------------------------------
+# Eğer istenen dosya veya klasör gerçekten varsa (resim, css, js vb.), ona izin ver.
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Geri kalan tüm istekleri index.php'ye gönder (Temiz URL'ler için)
+RewriteRule ^ index.php [L,QSA]
