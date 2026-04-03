@@ -1,4 +1,4 @@
-<?php require_once __DIR__ . '/../../config/bootstrap.php'; ?>
+<?php require_once "config/bootstrap.php"; ?>
 
 <!DOCTYPE html>
 <html>
@@ -8,8 +8,9 @@
 
     <title><?= $title ?></title>
     
-    <link rel="stylesheet" href="<?= URL . Config::get('bootstrap_assets.css') ?>">
-    <script src="<?= URL . Config::get('bootstrap_assets.js') ?>"></script>
+    <link rel="stylesheet" href="<?= common::getUrl() . Config::get('assets.css.bootstrap') ?>">
+    <link rel="stylesheet" href="<?= common::getUrl() . Config::get('assets.css.custome') ?>">
+    <script src="<?= common::getUrl() . Config::get('assets.js.bootstrap') ?>"></script>
 </head>
 <body>
 

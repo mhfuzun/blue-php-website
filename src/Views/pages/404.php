@@ -11,7 +11,7 @@
             </p>
         </div>
 
-        <a href="<?= URL ?>" class="btn btn-primary btn-lg shadow-sm px-5 py-3 rounded-pill fw-bold">
+        <a href="<?= Config::get('app_url') ?>" class="btn btn-primary btn-lg shadow-sm px-5 py-3 rounded-pill fw-bold">
             <i class="bi bi-house-door-fill me-2"></i> Ana Sayfaya Dön
         </a>
 

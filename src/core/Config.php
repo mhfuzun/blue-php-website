@@ -10,18 +10,27 @@ class Config {
     }
 
     // İstediğimiz ayarı anahtar ile almak için (Nokta notasyonu destekli: db.host gibi)
-    public static function get($key) {
-        $keys = explode('.', $key);
-        $value = self::$settings;
+    public static function get($key, $currentData = null) {
+        // Eğer başlangıç aşamasındaysak ana ayar dizisini baz al
+        $currentData = $currentData ?? self::$settings;
 
-        foreach ($keys as $k) {
-            if (isset($value[$k])) {
-                $value = $value[$k];
-            } else {
-                return null;
-            }
+        // Anahtarı parçalara ayır (ilk parça ve geri kalanı)
+        $parts = explode('.', $key, 2);
+        $currentKey = $parts[0];
+        $remainingKeys = $parts[1] ?? null;
+
+        // Eğer anahtar mevcut değilse null dön
+        if (!isset($currentData[$currentKey])) {
+            return null;
         }
-        return $value;
+
+        // Eğer gidilecek başka anahtar (nokta) varsa, içeriye doğru tekrar çağır
+        if ($remainingKeys !== null && is_array($currentData[$currentKey])) {
+            return self::get($remainingKeys, $currentData[$currentKey]);
+        }
+
+        // Son noktaya ulaşıldıysa değeri döndür
+        return $currentData[$currentKey];
     }
 }
 

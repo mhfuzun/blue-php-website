@@ -1,4 +1,7 @@
 <?php
+
+require_once "app/appheader.php";
+
 class Router {
     private $routes = [];
 
@@ -21,10 +24,11 @@ class Router {
         $action = $this->routes[$method][$uri];
 
         list($controllerName, $methodName) = explode('@', $action);
-
+        
         require_once __DIR__ . "/../app/$controllerName.php";
 
-        $controller = new $controllerName();
+        $controller = new $controllerName(); // is a controller class
+        $controller->checkRememberMe();
         $controller->$methodName();
     }
 }

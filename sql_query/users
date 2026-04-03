@@ -1,0 +1,28 @@
+-- 1. Öncelikle 'updated_at' sütununu otomatik güncelleyecek fonksiyonu oluşturalım
+CREATE OR REPLACE FUNCTION update_modified_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- 2. Tabloyu oluşturalım
+CREATE TABLE users (
+    id BIGSERIAL PRIMARY KEY, -- Otomatik artan benzersiz kimlik
+    nick VARCHAR(50) UNIQUE NOT NULL, -- Kullanıcı adı (Benzersiz ve boş olamaz)
+    userName VARCHAR(100) NOT NULL,
+    userSurname VARCHAR(100) NOT NULL,
+    passwordhash TEXT NOT NULL, -- Hashlenmiş şifre (Uzunluk sınırı koymamak en iyisidir)
+    role VARCHAR(20) DEFAULT 'user', -- user, admin, moderator vb.
+    status VARCHAR(20) DEFAULT 'active', -- active, passive, banned vb.
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 3. Trigger'ı (Tetikleyici) ekleyelim 
+-- Bu sayede tabloda bir satır güncellendiğinde 'updated_at' otomatik olarak o anki zamanı alır.
+CREATE TRIGGER update_users_modtime
+BEFORE UPDATE ON users
+FOR EACH ROW
+EXECUTE FUNCTION update_modified_column();
