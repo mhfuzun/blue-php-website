@@ -29,7 +29,7 @@
                     <?php endif; ?>
 
                     <form action="<?= common::getUrl() ?>login" method="POST">
-                        
+                        <?= common::retPostFormCSRF() ?>
                         <div class="form-floating mb-3">
                             <input type="text" name="identity" class="form-control" id="floatingId" placeholder="Kullanıcı Adı veya E-posta" required>
                             <label for="floatingId">Kullanıcı Adı veya E-posta</label>

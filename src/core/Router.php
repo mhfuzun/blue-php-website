@@ -1,6 +1,6 @@
 <?php
 
-require_once "app/appheader.php";
+require_once "appheader.php";
 
 class Router {
     private $routes = [];
@@ -28,7 +28,7 @@ class Router {
         require_once __DIR__ . "/../app/$controllerName.php";
 
         $controller = new $controllerName(); // is a controller class
-        $controller->checkRememberMe();
+        if (!SessionManager::isUserLoggedIn()) $controller->checkRememberMe();
         $controller->$methodName();
     }
 }

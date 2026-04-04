@@ -22,7 +22,7 @@
         <?php if (SessionManager::isUserLoggedIn()): ?>
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-purple-primary" href="#" id="userDropdown" data-bs-toggle="dropdown">
-              <?= SessionManager::getUserName() ?>
+              <?= SessionManager::UserName() ?>
             </a>
             <ul class="dropdown-menu dropdown-menu-end">
               <li><a class="dropdown-item" href="<?= common::getUrl() ?>profile">Profilim</a></li>

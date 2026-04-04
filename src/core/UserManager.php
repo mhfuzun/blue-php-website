@@ -20,7 +20,7 @@ class UserManager {
      * @param string $username
      * @param bool $isUnique Veritabanından gelen "bu isim alınmış mı?" bilgisi
      */
-    public static function checkUsername(string $username, bool $isUnique = true): bool {
+    public static function checkNickName(string $username, bool $isUnique = true): bool {
         if (!$isUnique) return false;
         if (strlen($username) < 5) return false;
         

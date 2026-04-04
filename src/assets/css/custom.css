@@ -1,23 +1,103 @@
-/* Google Gemini 2026 */
-/* Global Renk Ayarları */
-body { background-color: #F5F3FF !important; } /* Çok açık eflatun zemin */
+:root {
+  /* Ana renkler */
+  --purple-900: #2E1065; /* en koyu */
+  --purple-800: #3B0764;
+  --purple-700: #5B21B6;
+  --purple-600: #6D28D9; /* primary */
+  --purple-500: #8B5CF6;
+  --purple-400: #A78BFA;
+  --purple-300: #C4B5FD;
+  --purple-200: #DDD6FE;
+  --purple-100: #EDE9FE;
+  --purple-50:  #F5F3FF;
 
-.bg-purple-dark { background-color: #563d7c !important; } /* Navbar/Footer için derin mor */
-.bg-purple-light { background-color: #A78BFA !important; } /* Senin istediğin o ana renk */
-
-.text-purple-primary { color: #A78BFA !important; }
-.text-purple-soft { color: #DDD6FE !important; } /* Navbar linkleri için yumuşak mor */
-
-.btn-purple { 
-    background-color: #A78BFA !important; 
-    color: #1e1b4b !important; 
-    border: none !important;
-    font-weight: 600;
+  /* semantic */
+  --purple-primary: var(--purple-600);
+  --purple-soft: var(--purple-300);
+  --purple-light: var(--purple-200);
+  --purple-dark: var(--purple-900);
 }
-.btn-purple:hover { 
-    background-color: #7C3AED !important; 
-    color: white !important; 
+
+/* Navbar */
+.bg-purple-dark {
+  background-color: var(--purple-dark) !important;
 }
 
-/* Kartlar ve diğer alanlar için */
-.purple-border { border: 1px solid #A78BFA !important; }
+.text-purple-primary {
+  color: var(--purple-primary) !important;
+}
+
+.text-purple-soft {
+  color: var(--purple-soft) !important;
+}
+
+.border-purple-light {
+  border-color: var(--purple-light) !important;
+}
+
+/* Button */
+.btn-purple {
+  background: linear-gradient(135deg, var(--purple-600), var(--purple-500));
+  color: #fff;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-purple:hover {
+  background: linear-gradient(135deg, var(--purple-500), var(--purple-400));
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(109, 40, 217, 0.3);
+}
+
+/* Input */
+.form-control {
+  border-color: var(--purple-300);
+}
+
+.form-control:focus {
+  border-color: var(--purple-500);
+  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+}
+
+/* Dropdown */
+.dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid var(--purple-200);
+}
+
+.dropdown-item:hover {
+  background-color: var(--purple-100);
+  color: var(--purple-700);
+}
+
+/* Gradient Background */
+.bg-purple-gradient {
+  background: linear-gradient(135deg, var(--purple-50), var(--purple-200));
+}
+
+/* Card */
+.card-purple {
+  border-top: 5px solid var(--purple-400);
+}
+
+/* Footer */
+footer {
+  background-color: var(--purple-dark);
+}
+
+footer hr {
+  border-color: var(--purple-700);
+}
+
+.nav-link {
+  transition: 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--purple-400) !important;
+}
+
+body {
+  background-color: #0F0A1F;
+  color: #EDE9FE;
+}

@@ -1,14 +1,14 @@
 <?php
 
 class Controller {
-    protected SessionManager $session;
+    protected AuthService $auth_service;
 
     public function __construct() {
-        $this->session = new SessionManager();
+        $this->auth_service = new AuthService();
     }
 
     public function checkRememberMe(): bool {
-        return $this->session->tryRememberMe();
+        return $this->auth_service->tryRememberMe();
     }
 
     public function view($view, $data = []) {

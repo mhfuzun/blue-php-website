@@ -4,7 +4,7 @@
 class CookieManager
 {
     private static string $defaultPath = '/';
-    private static bool $secure = true;      // sadece HTTPS'de çalışır (production’da şart)
+    // private static bool $secure = true;      // sadece HTTPS'de çalışır (production’da şart)
     private static bool $httpOnly = true; // JS erişimini kapatır (XSS koruması)
     private static string $sameSite = 'Strict'; // Strict | Lax | None (CSRF riskini azaltır)
 
@@ -23,7 +23,7 @@ class CookieManager
             [
                 'expires' => time() + $expireSeconds,
                 'path' => $path ?? self::$defaultPath,
-                'secure' => self::$secure,
+                'secure' => env('COOKIE_SECURE', true),
                 'httponly' => self::$httpOnly,
                 'samesite' => self::$sameSite
             ]

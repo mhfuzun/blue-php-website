@@ -1,0 +1,4 @@
+INSERT INTO users (nick, username, usersurname, passwordhash) 
+VALUES ('admin', 'adminName', 'adminUserName', 
+    '$argon2id$v=19$m=65536,t=4,p=2$QmRpd1FUSnBKWWc4LlpmVQ$a3SFtvEgkDM31dQW5Ae6BkhCMdR3wfsyD9Ou4F4kFT0'
+);

@@ -1,0 +1,26 @@
+-- "remember_me" tablosu oluşturma
+CREATE TABLE remember_me (
+    -- Benzersiz kayıt kimliği
+    id SERIAL PRIMARY KEY,
+    
+    -- Kullanıcı ID'si (users tablonuzdaki veri tipine göre INT veya UUID olmalı)
+    -- REFERENCES users(id) kısmı, veri tutarlılığı için bir Foreign Key (Yabancı Anahtar) ekler.
+    userid INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    
+    -- Token alanı: SHA256 gibi hashlenmiş bir değer saklanacaksa VARCHAR(64) yeterli olur.
+    -- Ancak çok uzun tokenlar için TEXT daha esnektir.
+    token VARCHAR(255) NOT NULL UNIQUE,
+    
+    -- Kaydın oluşturulma zamanı
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    
+    -- Güvenlik için bir son kullanma tarihi eklenmesi profesyonel bir yaklaşımdır.
+    expires_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() + INTERVAL '30 days'
+);
+
+-- PERFORMANS İÇİN İNDEKSLER
+-- Token üzerinden sorgulama çok sık yapılacağı için B-Tree indeksi şarttır.
+CREATE INDEX idx_remember_me_token ON remember_me(token);
+
+-- Belirli bir kullanıcıya ait tüm oturumları hızlıca temizlemek veya listelemek için:
+CREATE INDEX idx_remember_me_userid ON remember_me(userid);

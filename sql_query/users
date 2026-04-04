@@ -11,6 +11,7 @@ $$ language 'plpgsql';
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY, -- Otomatik artan benzersiz kimlik
     nick VARCHAR(50) UNIQUE NOT NULL, -- Kullanıcı adı (Benzersiz ve boş olamaz)
+    email VARCHAR(150) UNIQUE NOT NULL, -- Kullanıcı e-posta (Benzersiz ve boş olamaz)
     userName VARCHAR(100) NOT NULL,
     userSurname VARCHAR(100) NOT NULL,
     passwordhash TEXT NOT NULL, -- Hashlenmiş şifre (Uzunluk sınırı koymamak en iyisidir)

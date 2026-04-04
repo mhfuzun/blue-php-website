@@ -8,6 +8,15 @@
         }
 
         /**
+         * retPostFormCSRF
+         * @return string <input type="hidden" name="csrf_token" value="$token$">
+         */
+        public static function retPostFormCSRF(): string {
+            $token = SessionManager::getCSRFToken();
+            return "<input type=\"hidden\" name=\"csrf_token\" value=\"$token\">";
+        }
+
+        /**
         * Input Temizleme (Sanitization)
         * SQL Injection veya XSS riskine karşı veriyi trimler ve zararlı etiketlerden arındırır.
         */
@@ -55,6 +64,29 @@
         public static function verifyToken(string $token, string $hash): bool
         {
             return hash_equals($hash, self::hashToken($token));
+        }
+
+        public static function _log(string $msg, bool $withTrace = false)
+        {
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+
+            $caller = $trace[1] ?? [];
+            $file = $caller['file'] ?? 'unknown';
+            $line = $caller['line'] ?? 0;
+
+            $log = "[LOG] $file:$line => $msg";
+
+            if ($withTrace) {
+                $log .= "\nTrace:\n";
+                foreach ($trace as $i => $t) {
+                    $log .= "#$i " .
+                        ($t['file'] ?? '?') . ":" .
+                        ($t['line'] ?? '?') . " " .
+                        ($t['function'] ?? '?') . "()\n";
+                }
+            }
+
+            error_log($log);
         }
     }
 ?>

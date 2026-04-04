@@ -12,11 +12,18 @@
                         <p class="text-secondary">Hemen ücretsiz hesabını oluştur.</p>
                     </div>
 
+                    
+
                     <form action="<?= common::getUrl() ?>register" method="POST">
-                        
+                        <?= common::retPostFormCSRF() ?>
                         <div class="form-floating mb-3">
-                            <input type="text" name="username" class="form-control" id="regUser" placeholder="Kullanıcı Adı" required>
+                            <input type="text" name="nick" class="form-control" id="regUser" placeholder="Kullanıcı Adı" required>
                             <label for="regUser"><i class="bi bi-at me-2"></i>Kullanıcı Adı</label>
+                        </div>
+
+                        <div class="form-floating mb-3">
+                            <input type="text" name="username" class="form-control" id="regUser" placeholder="Adınız" required>
+                            <label for="regUser"><i class="bi bi-at me-2"></i>Adınız</label>
                         </div>
 
                         <div class="form-floating mb-3">
@@ -35,7 +42,7 @@
                         </div>
 
                         <div class="form-check mb-4">
-                            <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                            <input class="form-check-input" type="checkbox" name="termsCheck" id="termsCheck" value="1" required>
                             <label class="form-check-label small text-secondary" for="termsCheck">
                                 <a href="<?= common::getUrl() ?>terms" class="text-decoration-none">Kullanım Şartlarını</a> ve Gizlilik Politikasını kabul ediyorum.
                             </label>

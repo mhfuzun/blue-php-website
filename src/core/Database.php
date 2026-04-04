@@ -90,13 +90,25 @@ class Database {
     }
 
     public function createRememberMeEntry(int $userid, string $token): bool {
-        $sql = "INSERT INTO remember_me (userid, token, created_at) VALUES (:userid, :token, NOW())";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([
-            'userid' => $userid,
-            'token' => $token
-        ]);
-        return true;
+        // TODO: token aynı olmamalı handle durumu çok zayıf geldi.
+        $sql = "INSERT INTO remember_me (userid, token, created_at) 
+                VALUES (:userid, :token, NOW())
+                ON CONFLICT (token) 
+                DO UPDATE SET 
+                    userid = EXCLUDED.userid, 
+                    created_at = EXCLUDED.created_at";
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute([
+                'userid' => $userid,
+                'token' => $token
+            ]);
+        } catch (\PDOException $e) {
+            // Loglama yapılabilir
+            common::_log("DATABASE: Remember Me Hatası: " . $e->getMessage(), true);
+            return false;
+        }
     }
 
     public function deleteRememberMeEntry(string $userid) {
@@ -120,6 +132,70 @@ class Database {
         ];
     }
 
+    public function getUserByRememberMeToken(string $token): array {
+        // JOIN kullanarak iki tabloyu ilişkilendiriyoruz
+        $sql = "SELECT 
+                    u.id, 
+                    u.nick, 
+                    u.email, 
+                    u.passwordhash, 
+                    u.status, 
+                    u.userName, 
+                    u.userSurname,
+                    rm.created_at AS token_created_at
+                FROM remember_me rm
+                INNER JOIN users u ON rm.userid = u.id
+                WHERE rm.token = :token
+                LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['token' => $token]);
+        
+        // FETCH_ASSOC ile sonucu alıyoruz
+        $userRecord = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // Eğer kayıt bulunursa diziyi dön, bulunmazsa boş dizi dön
+        return $userRecord ?: [];
+    }
+
+    public function createUser(string $nick, string $username, string $email, string $passwordhash): array {
+        $sql = "INSERT INTO users (nick, email, passwordhash, status, userName, userSurname) 
+                VALUES (:nick, :email, :passwordhash, 'active', :userName, :userSurname)
+                RETURNING id";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        try {
+            $stmt->execute([
+                'nick' => $nick,
+                'email' => $email,
+                'passwordhash' => $passwordhash,
+                'userName' => $username,
+                'userSurname' => ""
+            ]);
+
+            return ['success' => true];
+
+        } catch (\PDOException $e) {
+
+            // PostgreSQL unique violation code: 23505
+            if ($e->getCode() === '23505') {
+                return [
+                    'success' => false,
+                    'error' => 'This Nickname or Email already exists.',
+                ];
+            }
+
+            // diğer hatalar
+            common::_log("DATABASE: createUser Error: " . $e->getMessage(), true);
+
+            return [
+                'success' => false,
+                'error' => 'Internal Error',
+            ];
+        }
+    }
+
     public static function getUserId($dbrow): int {
         return $dbrow['id'];
     }
@@ -137,11 +213,11 @@ class Database {
     }
 
     public static function getUserUserName($dbrow): string {
-        return $dbrow['userName'];
+        return $dbrow['username'];
     }
 
     public static function getUserUserSurname($dbrow): string {
-        return $dbrow['userSurname'];
+        return $dbrow['usersurname'];
     }
 }
 

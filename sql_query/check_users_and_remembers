@@ -1,0 +1,3 @@
+-- table select
+SELECT * FROM users;
+SELECT * FROM remember_me;
